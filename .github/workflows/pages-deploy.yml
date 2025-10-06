@@ -22,12 +22,13 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+defaults:
+ run:
+  working-directory: ./docs
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
- 	run:
-  	  working-directory: ./docs	
 
     steps:
       - name: Checkout
@@ -62,13 +63,13 @@ jobs:
       - name: Test site
         run: |
           bundle exec htmlproofer _site \
-            \-\-disable-external \
+            \-\-disable-external=true \
             \-\-ignore-urls "/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/"
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_site${{ steps.pages.outputs.base_path }}"
+          path: "docs/_site${{ steps.pages.outputs.base_path }}"
 
   deploy:
     environment:
